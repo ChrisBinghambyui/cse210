@@ -5,7 +5,7 @@
 # 3. Assignment Description:
 #      prints a month calendar for a given month and year by counting days
 # 4. What was the hardest part? Be as specific as possible.
-#      trying to remember all the off-by-one stuff and leap year rules. i tried a couple ways and left and there might still be some remnant of it in there. i couldnt find the leap year stuff from last semester so i had to do it over again which was so much fun
+#      trying to remember all the off-by-one stuff and leap year rules. i tried a couple ways and left and there might still be some remnant of it in there. i couldnt find the leap year stuff from last semester so i had to do it over again which was so much fun 
 # 5. How long did it take for you to complete the assignment?
 #      about 3.5 hours
 
