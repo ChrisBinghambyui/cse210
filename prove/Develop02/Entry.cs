@@ -30,4 +30,14 @@ public class Entry
     {
         return $"{_date}|{_prompt}|{_response}";
     }
+
+    public string ToCsvFormat()
+    {
+        return $"\"{EscapeCsv(_date)}\",\"{EscapeCsv(_prompt)}\",\"{EscapeCsv(_response)}\"";
+    }
+
+    private string EscapeCsv(string value)
+    {
+        return value.Replace("\"", "\"\"");
+    }
 }

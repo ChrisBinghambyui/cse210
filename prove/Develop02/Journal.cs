@@ -85,4 +85,22 @@ public class Journal
 
         Console.WriteLine($"Loaded {_entries.Count} entries from {filename}.");
     }
+
+    public void ExportJournalToExcel()
+    {
+        Console.Write("What is the filename for the Excel export file? ");
+        string filename = Console.ReadLine();
+
+        using (StreamWriter outputFile = new StreamWriter(filename))
+        {
+            outputFile.WriteLine("Date,Prompt,Response");
+
+            foreach (Entry entry in _entries)
+            {
+                outputFile.WriteLine(entry.ToCsvFormat());
+            }
+        }
+
+        Console.WriteLine($"Journal exported to {filename}.");
+    }
 }
