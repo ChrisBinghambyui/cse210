@@ -20,6 +20,10 @@ public class Entry
         _date = date;
     }
 
+    public string Prompt { get { return _prompt; } }
+    public string Response { get { return _response; } }
+    public string Date { get { return _date; } }
+
     public void Display()
     {
         Console.WriteLine($"{_date} - {_prompt}");

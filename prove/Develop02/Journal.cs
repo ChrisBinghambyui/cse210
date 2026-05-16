@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ClosedXML.Excel;
 
 public class Journal
 {
@@ -88,8 +89,66 @@ public class Journal
 
     public void ExportJournalToExcel()
     {
-        Console.Write("Name for the Excel export file? ");
+        // using (StreamWriter outputFile = new StreamWriter(filename))
+        // {
+        //     outputFile.WriteLine("Date,Prompt,Response");
+        //     foreach (Entry entry in _entries)
+        //     {
+        //         outputFile.WriteLine(entry.ToCsvFormat());
+        //     }
+        // }
+        //
+        // ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        // using (var package = new ExcelPackage())
+        // {
+        //     var ws = package.Workbook.Worksheets.Add("Journal");
+        //     // populate cells
+        //     // package.SaveAs(new FileInfo(filename));
+        // }
+        Console.Write("Name for the export file (don't forfet .xlsx): ");
         string filename = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(filename))
+        {
+            filename = "journal.csv";
+        }
+
+        string ext = Path.GetExtension(filename);
+        if (string.IsNullOrEmpty(ext))
+        {
+            filename = filename + ".csv";
+            ext = ".csv";
+        }
+
+        if (ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+        {
+            using (var wb = new XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("Journal");
+                ws.Cell(1, 1).Value = "Date";
+                ws.Cell(1, 2).Value = "Prompt";
+                ws.Cell(1, 3).Value = "Response";
+
+                int row = 2;
+                foreach (Entry entry in _entries)
+                {
+                    ws.Cell(row, 1).Value = entry.Date;
+                    ws.Cell(row, 2).Value = entry.Prompt;
+                    ws.Cell(row, 3).Value = entry.Response;
+                    row++;
+                }
+
+                wb.SaveAs(filename);
+            }
+
+            Console.WriteLine($"Journal exported to {filename}.");
+            return;
+        }
+
+        if (!ext.Equals(".csv", StringComparison.OrdinalIgnoreCase))
+        {
+            filename = filename + ".csv";
+        }
 
         using (StreamWriter outputFile = new StreamWriter(filename))
         {

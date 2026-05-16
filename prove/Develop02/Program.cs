@@ -48,7 +48,7 @@ class Program
                     keepRunning = false;
                     break;
                 default:
-                    Console.WriteLine("Please choose a number from 1 to 6.");
+                    Console.WriteLine("Invalid, choose a number from 1 to 6.");
                     break;
             }
 
