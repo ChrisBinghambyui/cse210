@@ -19,7 +19,7 @@ class Program
             Console.WriteLine("2. Display Journal");
             Console.WriteLine("3. Save Journal");
             Console.WriteLine("4. Load Journal");
-            Console.WriteLine("5. Export to Excel");
+            Console.WriteLine("5. Excel");
             Console.WriteLine("6. Quit");
             Console.Write("What would you like to do? (1-6) ");
 

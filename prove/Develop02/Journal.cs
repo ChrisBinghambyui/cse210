@@ -17,10 +17,10 @@ public class Journal
     {
         string prompt = _promptGenerator.GetRandomPrompt();
         Console.WriteLine(prompt);
-        Console.Write("Your response: ");
+        Console.Write("\t>");
 
         string response = Console.ReadLine();
-        string date = DateTime.Now.ToString("M/d/yyyy");
+        string date = DateTime.Now.ToString("m/d/yyyy");
 
         Entry entry = new Entry(prompt, response, date);
         _entries.Add(entry);
@@ -43,7 +43,7 @@ public class Journal
 
     public void SaveJournal()
     {
-        Console.Write("What is the filename for the journal file? ");
+        Console.Write("Name for the journal file? ");
         string filename = Console.ReadLine();
 
         using (StreamWriter outputFile = new StreamWriter(filename))
@@ -59,7 +59,7 @@ public class Journal
 
     public void LoadJournal()
     {
-        Console.Write("What is the filename for the journal file? ");
+        Console.Write("Name of the journal file? ");
         string filename = Console.ReadLine();
 
         if (!File.Exists(filename))
@@ -83,12 +83,12 @@ public class Journal
             }
         }
 
-        Console.WriteLine($"Loaded {_entries.Count} entries from {filename}.");
+        Console.WriteLine($"Loaded {_entries.Count} from {filename}.");
     }
 
     public void ExportJournalToExcel()
     {
-        Console.Write("What is the filename for the Excel export file? ");
+        Console.Write("Name for the Excel export file? ");
         string filename = Console.ReadLine();
 
         using (StreamWriter outputFile = new StreamWriter(filename))
