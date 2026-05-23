@@ -1,3 +1,14 @@
+# 1. Name:
+#      Chris Bingham
+# 2. Assignment Name:
+#      Lab 05 : Sudoku Draft
+# 3. Assignment Description:
+#      Run sudoku, and allow editing of target spaces, then saving and reopening that file.
+# 4. What was the hardest part? Be as specific as possible.
+#      Just sorta juggling it all mentally, I think I can do more to simplify my functions
+# 5. How long did it take for you to complete the assignment?
+#      4 hrs (Somehow when handling the get_cell function i got rows and columns swapped, and it took me forever to figure out that that was the problem)
+
 import json
 import os
 
