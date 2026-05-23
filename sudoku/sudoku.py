@@ -39,40 +39,20 @@ class BoardData:
     def set_value(self, row: int, col: int, value: int) -> None:
         self.cells[row][col] = value
 
-    def is_placement_valid(self, row: int, col: int, entry: int) -> bool:
-        if entry == 0:
-            return True
-
-        for index in range(9):
-            if index != col and self.cells[row][index] == entry:
-                return False
-            if index != row and self.cells[index][col] == entry:
-                return False
-
-        start_row = (row // 3) * 3
-        start_col = (col // 3) * 3
-        for r in range(start_row, start_row + 3):
-            for c in range(start_col, start_col + 3):
-                if (r != row or c != col) and self.cells[r][c] == entry:
-                    return False
-
-        return True
-
-    def is_solved(self) -> bool:
-        for row in range(9):
-            for col in range(9):
-                value = self.cells[row][col]
-                if value == 0:
-                    return False
-                if not self.is_placement_valid(row, col, value):
-                    return False
-        return True
-
 
 class SudokuStorage:
     def load(self, filename: str) -> BoardData:
         with open(filename, "r", encoding="utf-8") as source:
-            rows = json.load(source)
+            data = json.load(source)
+
+        if isinstance(data, dict):
+            rows = data.get("board")
+        else:
+            rows = data
+
+        if rows is None:
+            raise ValueError("File did not contain a board.")
+
         return BoardData.from_rows(rows)
 
     def save(self, filename: str, board: BoardData) -> None:
@@ -81,153 +61,108 @@ class SudokuStorage:
             os.makedirs(directory, exist_ok=True)
 
         with open(filename, "w", encoding="utf-8") as target:
-            json.dump(board.to_rows(), target, indent=2)
+            json.dump({"board": board.to_rows()}, target, indent=2)
 
 
 class SudokuGame:
     def __init__(self) -> None:
         self.storage = SudokuStorage()
         self.board = BoardData()
-        self.current_filename = "sudoku/board.json"
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.current_filename = "131.05.Easy.json"
+
+    def resolve_filename(self, filename: str) -> str:
+        if os.path.isabs(filename):
+            return filename
+
+        return os.path.join(self.base_dir, filename)
 
     def run(self) -> None:
         print("Sudoku")
-        print("Commands: L=Load, S=Save, E=Edit Cell, D=Display, Q=Quit")
-        print()
+        self.load_board()
 
         keep_running = True
         while keep_running:
             self.display_board_state()
 
-            if self.board.is_solved():
-                print("Board is solved. Nice work!")
-
-            command = input("Choose command (L/S/E/D/Q): ").strip().upper()
-
-            if command == "L":
-                self.handle_load()
-            elif command == "S":
-                self.handle_save()
-            elif command == "E":
-                self.entry_and_validate()
-            elif command == "D":
-                pass
-            elif command == "Q":
+            command = input("Specify a coordinate to edit or 'Q' to save and quit\n> ").strip().upper()
+            if command == "Q":
+                self.save_board()
                 keep_running = False
             else:
-                print("Unknown command. Try L, S, E, D, or Q.")
-
+                self.edit_coordinate(command)
             print()
 
-    def handle_load(self) -> None:
-        filename = input("Enter board filename to load (default sudoku/board.json): ").strip()
+    def load_board(self) -> None:
+        filename = input(f"Enter board filename to load [{self.current_filename}]: ").strip()
         if filename == "":
             filename = self.current_filename
 
         try:
-            self.board = self.storage.load(filename)
+            self.board = self.storage.load(self.resolve_filename(filename))
             self.current_filename = filename
-            print(f"Loaded board from {os.path.abspath(filename)}")
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             print(f"Load failed: {exc}")
 
-    def handle_save(self) -> None:
-        filename = input("Enter board filename to save (default sudoku/board.json): ").strip()
-        if filename == "":
-            filename = self.current_filename
-
-        try:
-            self.storage.save(filename, self.board)
-            self.current_filename = filename
-            print(f"Saved board to {os.path.abspath(filename)}")
-        except OSError as exc:
-            print(f"Save failed: {exc}")
-
     def display_board_state(self) -> None:
-        print("    1 2 3   4 5 6   7 8 9")
-        print("  +-------+-------+-------+")
+        print("   A B C D E F G H I")
 
         for row in range(9):
-            row_label = chr(ord("A") + row)
-            print(f"{row_label} | ", end="")
+            row_label = str(row + 1)
+            row_values: List[str] = []
             for col in range(9):
                 value = self.board.get_value(row, col)
-                text = "." if value == 0 else str(value)
-                print(f"{text} ", end="")
-                if (col + 1) % 3 == 0:
-                    print("| ", end="")
-            print()
-            if (row + 1) % 3 == 0:
-                print("  +-------+-------+-------+")
+                row_values.append(" " if value == 0 else str(value))
 
-    def entry_and_validate(self) -> None:
-        target = self.get_target()
-        if target is None:
+            left = f"{row_label}  "
+            first = " ".join(row_values[0:3])
+            second = " ".join(row_values[3:6])
+            third = " ".join(row_values[6:9])
+            print(f"{left}{first}|{second}|{third}")
+
+            if row in (2, 5):
+                print("   -----+-----+-----")
+
+    def edit_coordinate(self, coordinate: str) -> None:
+        row_col = self.parse_coordinate(coordinate)
+        if row_col is None:
+            print("Please use a coordinate like B8 or Q to quit.")
             return
 
-        row, col = target
+        row, col = row_col
+        target_name = f"{chr(ord('A') + row)}{col + 1}"
+        entry_text = input(f"What number goes in {target_name}? ").strip()
 
-        current_value = self.board.get_value(row, col)
-        if current_value != 0:
-            overwrite = input(f"Current value is {current_value}. Overwrite? (y/n): ").strip().lower()
-            if overwrite != "y":
-                return
-
-        entry = self.get_entry_value()
-        if entry is None:
+        if not entry_text.isdigit():
+            print("Please enter a number from 0 to 9.")
             return
 
-        previous_value = self.board.get_value(row, col)
+        entry = int(entry_text)
+        if entry < 0 or entry > 9:
+            print("Please enter a number from 0 to 9.")
+            return
+
         self.board.set_value(row, col, entry)
 
-        if not self.board.is_placement_valid(row, col, entry):
-            self.board.set_value(row, col, previous_value)
-            print("That entry violates Sudoku rules. Change canceled.")
-            return
+    def parse_coordinate(self, coordinate: str) -> Optional[Tuple[int, int]]:
+        if len(coordinate) != 2:
+            return None
 
-        print("Entry accepted.")
+        row_char = coordinate[0]
+        col_char = coordinate[1]
 
-    def get_target(self) -> Optional[Tuple[int, int]]:
-        max_attempts = 3
-        attempts = 0
+        if not ("A" <= row_char <= "I" and "1" <= col_char <= "9"):
+            return None
 
-        while attempts < max_attempts:
-            target_text = input("Enter target cell (like B5): ").strip().upper()
-            attempts += 1
+        return ord(row_char) - ord("A"), ord(col_char) - ord("1")
 
-            if len(target_text) == 2:
-                row_char = target_text[0]
-                col_char = target_text[1]
-
-                if "A" <= row_char <= "I" and "1" <= col_char <= "9":
-                    row = ord(row_char) - ord("A")
-                    col = ord(col_char) - ord("1")
-                    return row, col
-
-            if attempts < max_attempts:
-                print("Target must be A-I plus 1-9, for example B5.")
-
-        print("Too many invalid targets. Entry canceled.")
-        return None
-
-    def get_entry_value(self) -> Optional[int]:
-        max_attempts = 3
-        attempts = 0
-
-        while attempts < max_attempts:
-            entry_text = input("Enter value 1-9 (or 0 to clear): ").strip()
-            attempts += 1
-
-            if entry_text.isdigit():
-                entry = int(entry_text)
-                if 0 <= entry <= 9:
-                    return entry
-
-            if attempts < max_attempts:
-                print("Entry must be a number from 0 to 9.")
-
-        print("Too many invalid entries. Entry canceled.")
-        return None
+    def save_board(self) -> None:
+        try:
+            path = self.resolve_filename(self.current_filename)
+            self.storage.save(path, self.board)
+            print(f"Saved board to {path}")
+        except OSError as exc:
+            print(f"Save failed: {exc}")
 
 
 if __name__ == "__main__":
