@@ -65,12 +65,12 @@ def get_cell(txt):
     if len(txt) != 2:
         return None
 
-    row = txt[0].upper()
-    col = txt[1]
-    if row < "A" or row > "I" or col < "1" or col > "9":
+    col = txt[0].upper()
+    row = txt[1]
+    if col < "A" or col > "I" or row < "1" or row > "9":
         return None
 
-    return ord(row) - ord("A"), ord(col) - ord("1")
+    return ord(row) - ord("1"), ord(col) - ord("A")
 
 
 def main():
@@ -104,7 +104,8 @@ def main():
                 print("Please use a coordinate like B8 or Q to quit.")
             else:
                 r, c = spot
-                num = input(f"What number goes in {cmd}? ").strip()
+                spot_name = f"{cmd[0].upper()}{cmd[1]}"
+                num = input(f"What number goes in {spot_name}? ").strip()
                 if num.isdigit() and 0 <= int(num) <= 9:
                     bd[r][c] = int(num)
                 else:
