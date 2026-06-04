@@ -1,13 +1,4 @@
-# 1. Name:
-#      Chris Bingham
-# 2. Assignment Name:
-#      Lab 05 : Sudoku Draft
-# 3. Assignment Description:
-#      Run sudoku, and allow editing of target spaces, then saving and reopening that file.
-# 4. What was the hardest part? Be as specific as possible.
-#      Just sorta juggling it all mentally, I think I can do more to simplify my functions
-# 5. How long did it take for you to complete the assignment?
-#      4 hrs (Somehow when handling the get_cell function i got rows and columns swapped, and it took me forever to figure out that that was the problem)
+
 
 import json
 import os
@@ -73,15 +64,67 @@ def show_board(bd):
 
 
 def get_cell(txt):
-    if len(txt) != 2:
+    return parse_coordinate(txt)
+
+
+def parse_coordinate(txt):
+    """Parse coordinates like 'B2', '2B', 'b2' and return (row, col) or None.
+    Row is 0-based (0..8), Col is 0-based (0..8).
+    """
+    if not isinstance(txt, str):
+        return None
+    s = txt.strip().upper()
+    if len(s) != 2:
         return None
 
-    col = txt[0].upper()
-    row = txt[1]
-    if col < "A" or col > "I" or row < "1" or row > "9":
+    a, b = s[0], s[1]
+    letter = None
+    number = None
+    if 'A' <= a <= 'I' and '1' <= b <= '9':
+        letter = a
+        number = b
+    elif 'A' <= b <= 'I' and '1' <= a <= '9':
+        letter = b
+        number = a
+    else:
         return None
 
-    return ord(row) - ord("1"), ord(col) - ord("A")
+    row = ord(number) - ord('1')
+    col = ord(letter) - ord('A')
+    return row, col
+
+
+def is_valid_number(txt):
+    """Return integer 1..9 if valid, otherwise None."""
+    if not isinstance(txt, str):
+        return None
+    s = txt.strip()
+    if not s.isdigit():
+        return None
+    n = int(s)
+    if 1 <= n <= 9:
+        return n
+    return None
+
+
+def can_place(bd, r, c, n):
+    """Check rules: empty cell, unique in row, column, and 3x3 box.
+    Returns (True, None) if placeable, otherwise (False, reason_string).
+    """
+    if bd[r][c] != 0:
+        return False, "Square already filled"
+    if any(bd[r][j] == n for j in range(9)):
+        return False, "Number already in that row"
+    if any(bd[i][c] == n for i in range(9)):
+        return False, "Number already in that column"
+    br = (r // 3) * 3
+    bc = (c // 3) * 3
+    for i in range(br, br + 3):
+        for j in range(bc, bc + 3):
+            if bd[i][j] == n:
+                return False, "Number already in that 3x3 box"
+
+    return True, None
 
 
 def main():
@@ -100,9 +143,9 @@ def main():
     keep = True
     while keep:
         show_board(bd)
-        cmd = input("Specify a coordinate to edit or 'Q' to save and quit\n> ").strip().upper()
+        raw = input("Specify a coordinate to edit or 'Q' to save and quit\n> ").strip()
 
-        if cmd == "Q":
+        if raw.upper() == "Q":
             try:
                 save_board(fn, bd)
                 print(f"Saved board to {make_path(fn)}")
@@ -110,17 +153,22 @@ def main():
                 print(f"Save failed: {err}")
             keep = False
         else:
-            spot = get_cell(cmd)
+            spot = get_cell(raw)
             if spot is None:
                 print("Please use a coordinate like B8 or Q to quit.")
             else:
                 r, c = spot
-                spot_name = f"{cmd[0].upper()}{cmd[1]}"
-                num = input(f"What number goes in {spot_name}? ").strip()
-                if num.isdigit() and 0 <= int(num) <= 9:
-                    bd[r][c] = int(num)
+                spot_name = f"{chr(ord('A')+c)}{r+1}"
+                numtxt = input(f"What number goes in {spot_name}? ").strip()
+                n = is_valid_number(numtxt)
+                if n is None:
+                    print("Please enter a number from 1 to 9.")
                 else:
-                    print("Please enter a number from 0 to 9.")
+                    ok, reason = can_place(bd, r, c, n)
+                    if not ok:
+                        print(reason)
+                    else:
+                        bd[r][c] = n
 
         print()
 
