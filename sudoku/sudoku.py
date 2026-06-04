@@ -1,4 +1,13 @@
-
+# 1. Name:
+#      Chris Bingham
+# 2. Assignment Name:
+#      Lab 06 : Sudoku Program
+# 3. Assignment Description:
+#      Run a simple game of sudoku
+# 4. What was the hardest part? Be as specific as possible.
+#      apparently remembering to turn this in lol. The hardest thing for me was having it handle what to do when a targetted space already had something there. At one point it just started adding inputs together and made a whole mess, it was great.
+# 5. How long did it take for you to complete the assignment?
+#      4ish
 
 import json
 import os
