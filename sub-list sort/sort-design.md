@@ -30,42 +30,42 @@ SUBLIST_SORT(source):
   destination = array of size n
 
   REPEAT:
-    i = 0
-    j = 0
+    x = 0
+    y = 0
     sublistCount = 0
 
-    WHILE i < n:
-      startA = i
-      WHILE i < n-1 AND source[i] <= source[i+1]:
-        i += 1
-      endA = i
-      i += 1
+    WHILE x < n:
+      startA = x
+      WHILE x < n-1 AND source[x] <= source[x+1]:
+        x += 1
+      endA = x
+      x += 1
       sublistCount += 1
 
-      IF i >= n:
-        copy source[startA to endA] into destination starting at j
-        j += (endA - startA + 1)
+      IF x >= n:
+        copy source[startA to endA] into destination starting at y
+        y += (endA - startA + 1)
       ELSE:
-        startB = i
-        WHILE i < n-1 AND source[i] <= source[i+1]:
-          i += 1
-        endB = i
-        i += 1
+        startB = x
+        WHILE x < n-1 AND source[x] <= source[x+1]:
+          x += 1
+        endB = x
+        x += 1
         sublistCount += 1
 
         a = startA
         b = startB
         WHILE a <= endA AND b <= endB:
           IF source[a] <= source[b]:
-            destination[j] = source[a]
+            destination[y] = source[a]
             a += 1
           ELSE:
-            destination[j] = source[b]
+            destination[y] = source[b]
             b += 1
-          j += 1
+          y += 1
 
-        copy any leftover from A into destination starting at j
-        copy any leftover from B into destination starting at j
+        copy any leftover from A into destination starting at y
+        copy any leftover from B into destination starting at y
 
     source = destination
 
