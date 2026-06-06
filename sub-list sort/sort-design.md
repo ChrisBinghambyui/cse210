@@ -24,6 +24,7 @@ The sub list defines groups by going through each member of the list until it fi
 
 
 pseudocode
+
 SUBLIST_SORT(source, n):
   destination = array of size n
 
