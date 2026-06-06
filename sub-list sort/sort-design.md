@@ -72,3 +72,68 @@ SUBLIST_SORT(source):
   UNTIL sublistCount <= 2
 
   RETURN source
+
+
+
+copilot pseudocode
+FUNCTION NaturalMergeSort(list):
+
+    WHILE True:
+
+        // Step 1: Split list into increasing runs (groups)
+        groups = []
+        currentGroup = [list[0]]
+
+        FOR i FROM 1 TO length(list) - 1:
+            IF list[i] >= list[i - 1]:
+                APPEND list[i] TO currentGroup
+            ELSE:
+                APPEND currentGroup TO groups
+                currentGroup = [list[i]]
+
+        APPEND currentGroup TO groups
+
+        // If only one group, list is fully sorted
+        IF length(groups) == 1:
+            RETURN groups[0]
+
+        // Step 2: Merge pairs of groups
+        newList = []
+        i = 0
+
+        WHILE i < length(groups):
+            IF i + 1 < length(groups):
+                merged = Merge(groups[i], groups[i + 1])
+                APPEND merged TO newList
+                i = i + 2
+            ELSE:
+                // Odd group left, carry it forward
+                APPEND groups[i] TO newList
+                i = i + 1
+
+        // Step 3: Flatten merged groups back into list
+        list = Concatenate(newList)
+
+
+FUNCTION Merge(A, B):
+    result = []
+    i = 0
+    j = 0
+
+    WHILE i < length(A) AND j < length(B):
+        IF A[i] <= BAPPEND A[i] TO result
+            i = i + 1
+        ELSE:
+            APPEND B[j] TO result
+            j = j + 1
+
+    // Append remaining elements
+    WHILE i < length(A):
+        APPEND A[i] TO result
+        i = i + 1
+
+    WHILE j < length(B):
+        APPEND B[j] TO result
+        j = j + 1
+
+    RETURN result
