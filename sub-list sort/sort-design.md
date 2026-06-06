@@ -24,3 +24,49 @@ The sub list defines groups by going through each member of the list until it fi
 
 
 pseudocode
+SUBLIST_SORT(source, n):
+  destination = array of size n
+
+  REPEAT:
+    i = 0
+    j = 0
+    sublistCount = 0
+
+    WHILE i < n:
+      startA = i
+      WHILE i < n-1 AND source[i] <= source[i+1]:
+        i += 1
+      endA = i
+      i += 1
+      sublistCount += 1
+
+      IF i >= n:
+        copy source[startA to endA] into destination starting at j
+        j += (endA - startA + 1)
+      ELSE:
+        startB = i
+        WHILE i < n-1 AND source[i] <= source[i+1]:
+          i += 1
+        endB = i
+        i += 1
+        sublistCount += 1
+
+        a = startA
+        b = startB
+        WHILE a <= endA AND b <= endB:
+          IF source[a] <= source[b]:
+            destination[j] = source[a]
+            a += 1
+          ELSE:
+            destination[j] = source[b]
+            b += 1
+          j += 1
+
+        copy any leftover from A into destination starting at j
+        copy any leftover from B into destination starting at j
+
+    source = destination
+
+  UNTIL sublistCount <= 2
+
+  RETURN source
