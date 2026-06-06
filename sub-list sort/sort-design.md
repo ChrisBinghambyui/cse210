@@ -137,3 +137,7 @@ FUNCTION Merge(A, B):
         j = j + 1
 
     RETURN result
+
+
+
+compare and contrast
