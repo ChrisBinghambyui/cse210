@@ -141,3 +141,4 @@ FUNCTION Merge(A, B):
 
 
 compare and contrast
+i feel like the copilot version would be less efficient as it looks like it uses more groups and just uses more variables overall
