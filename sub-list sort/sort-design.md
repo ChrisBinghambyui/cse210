@@ -25,7 +25,8 @@ The sub list defines groups by going through each member of the list until it fi
 
 pseudocode
 
-SUBLIST_SORT(source, n):
+SUBLIST_SORT(source):
+  n = length of source
   destination = array of size n
 
   REPEAT:
