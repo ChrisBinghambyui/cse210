@@ -1,3 +1,11 @@
+Step 1 By Hand: 30 minutes
+Step 2 Approach: 10 minutes
+Step 3 Pseudocode and Structure Chart: 60 minutes
+Step 4 Copilot: 5 minutes
+Step 5 Compare and Contrast: 15 minutes
+Step 6 Update: 10 minutes
+
+
 random numbers: 47, 12, 35, 8, 91, 23, 56, 4, 78, 15, 63, 29, 7, 44, 82, 19, 55, 31, 66, 3
 
 sublists
@@ -141,4 +149,4 @@ FUNCTION Merge(A, B):
 
 
 compare and contrast
-i feel like the copilot version would be less efficient as it looks like it uses more groups and just uses more variables overall
+i feel like the copilot version would be less efficient as it looks like it uses more groups and just uses more variables overall, but it would probably be easier to tinker with and adjust as needed. I still think i'd take the way i built it though.
