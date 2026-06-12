@@ -19,11 +19,28 @@ class Breathing : Activity
         while (DateTime.Now < endTime)
         {
             DisplayBreatheMessage(_inOrOut);
-            PauseTimerCountdown(4);
+            PauseTimerBreathe(_inOrOut, 4);
             _inOrOut = InOrOut();
         }
 
         DisplayEndMessage();
+    }
+
+    private void PauseTimerBreathe(bool inOrOut, int time)
+    {
+        for (int i = 1; i <= time; i++)
+        {
+            int length = inOrOut ? i : (time - i + 1);
+            string bar = new string('-', length);
+
+            Console.Write(bar);
+            System.Threading.Thread.Sleep(1000);
+
+            for (int j = 0; j < bar.Length; j++)
+            {
+                Console.Write("\b \b");
+            }
+        }
     }
 
     private string BreatheIn()

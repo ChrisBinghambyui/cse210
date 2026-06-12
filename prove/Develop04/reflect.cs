@@ -5,7 +5,9 @@ class Reflection : Activity
 {
     private List<string> _promptList;
     private List<string> _questionList;
+    private List<string> _usedQuestionList;
     private Random _random;
+    private static List<string> _usedPromptList = new List<string>();
 
     public Reflection()
         : base("Reflection Activity", "This activity will help you reflect on times in your life when you have shown strength and resilience. This will help you recognize the power you have and how you can use it in other aspects of your life.")
@@ -32,6 +34,8 @@ class Reflection : Activity
             "What did you learn about yourself through this experience?",
             "How can you keep this experience in mind in the future?"
         };
+
+        _usedQuestionList = new List<string>();
     }
 
     public void RunActivity()
@@ -53,8 +57,26 @@ class Reflection : Activity
 
     private string ChoosePrompt()
     {
-        int index = _random.Next(_promptList.Count);
-        return _promptList[index];
+        if (_usedPromptList.Count >= _promptList.Count)
+        {
+            _usedPromptList.Clear();
+        }
+
+        List<string> available = new List<string>();
+
+        for (int i = 0; i < _promptList.Count; i++)
+        {
+            if (!_usedPromptList.Contains(_promptList[i]))
+            {
+                available.Add(_promptList[i]);
+            }
+        }
+
+        int index = _random.Next(available.Count);
+        string prompt = available[index];
+        _usedPromptList.Add(prompt);
+
+        return prompt;
     }
 
     private void DisplayPrompt()
@@ -65,8 +87,26 @@ class Reflection : Activity
 
     private string ChooseQuestion()
     {
-        int index = _random.Next(_questionList.Count);
-        return _questionList[index];
+        if (_usedQuestionList.Count >= _questionList.Count)
+        {
+            _usedQuestionList.Clear();
+        }
+
+        List<string> available = new List<string>();
+
+        for (int i = 0; i < _questionList.Count; i++)
+        {
+            if (!_usedQuestionList.Contains(_questionList[i]))
+            {
+                available.Add(_questionList[i]);
+            }
+        }
+
+        int index = _random.Next(available.Count);
+        string question = available[index];
+        _usedQuestionList.Add(question);
+
+        return question;
     }
 
     private void DisplayQuestion()
