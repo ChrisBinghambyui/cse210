@@ -19,6 +19,8 @@ class GoalManager
         _level = 1;
         _town = new TownManager();
         _villagers = new VillagerManager();
+        _villagers.RecruitVillager();
+        _villagers.RecruitVillager();
         _board = new CommissionBoard();
         _combat = new CombatEngine();
         _expansion = new ExpansionManager();

@@ -21,16 +21,13 @@ class Building
         _tierBonuses = tierBonuses;
     }
 
-    public string GetName() { return _name; }
-    public int GetCurrentTier() { return _currentTier; }
-    public int GetMaxTier() { return _maxTier; }
-    public bool IsMaxed() { return _currentTier >= _maxTier; }
-
-    public int GetNextCost()
-    {
-        if (IsMaxed()) return 0;
-        return _tierCosts[_currentTier];
-    }
+    public string GetName() => _name;
+    public int GetCurrentTier() => _currentTier;
+    public int GetMaxTier() => _maxTier;
+    public bool IsMaxed() => _currentTier >= _maxTier;
+    public int GetNextCost() => IsMaxed() ? 0 : _tierCosts[_currentTier];
+    public void SetTier(int tier) => _currentTier = Math.Min(tier, _maxTier);
+    public string Encode() => $"{_name}:{_currentTier}";
 
     public int GetTotalBonus()
     {
@@ -46,22 +43,12 @@ class Building
         return true;
     }
 
-    public void SetTier(int tier) { _currentTier = Math.Min(tier, _maxTier); }
-
     public string GetStatusString()
     {
-        string s = _name + " (Tier " + _currentTier + "/" + _maxTier + ")";
+        string s = $"{_name} (Tier {_currentTier}/{_maxTier})";
         if (_currentTier > 0)
-        {
-            s += "\n   " + _tierNames[_currentTier - 1] + ": " + _tierDescriptions[_currentTier - 1];
-            s += "\n   Current bonus: +" + GetTotalBonus() + "%";
-        }
-        if (!IsMaxed())
-            s += "\n   Next: " + _tierNames[_currentTier] + " - " + GetNextCost() + " gold";
-        else
-            s += "\n   Fully upgraded!";
+            s += $"\n   {_tierNames[_currentTier - 1]}: {_tierDescriptions[_currentTier - 1]}\n   Current bonus: +{GetTotalBonus()}%";
+        s += IsMaxed() ? "\n   Fully upgraded!" : $"\n   Next: {_tierNames[_currentTier]} - {GetNextCost()} gold";
         return s;
     }
-
-    public string Encode() { return _name + ":" + _currentTier; }
 }

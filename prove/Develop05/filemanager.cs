@@ -187,7 +187,7 @@ class FileManager
         else if (type == "Checklist")
         {
             GoalType gt = (GoalType)Enum.Parse(typeof(GoalType), p[4]);
-            return new ChecklistGoal(p[1], p[2], int.Parse(p[3]), int.Parse(p[5]), int.Parse(p[6]), int.Parse(p[7]), gt);
+            return new ChecklistGoal(p[1], p[2], int.Parse(p[3]), int.Parse(p[5]), int.Parse(p[6]), gt, int.Parse(p[7]));
         }
         else if (type == "Commission")
         {

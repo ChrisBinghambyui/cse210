@@ -16,46 +16,32 @@ class Commission : Goal
     {
         _goldReward = goldReward;
         _frequency = frequency;
-        _isComplete = false;
         _deadline = deadline;
         _villagerSource = villagerSource;
     }
 
-    public int GetGoldReward() { return _goldReward; }
-    public CommissionFrequency GetFrequency() { return _frequency; }
-    public DateTime GetDeadline() { return _deadline; }
-    public string GetVillagerSource() { return _villagerSource; }
-    public bool IsExpired() { return DateTime.Now > _deadline && !_isComplete; }
+    public int GetGoldReward() => _goldReward;
+    public CommissionFrequency GetFrequency() => _frequency;
+    public DateTime GetDeadline() => _deadline;
+    public string GetVillagerSource() => _villagerSource;
+    public bool IsExpired() => DateTime.Now > _deadline && !_isComplete;
+    public override bool IsComplete() => _isComplete;
 
     public override int RecordEvent()
     {
-        if (_isComplete)
-        {
-            Console.WriteLine("Already completed.");
-            return 0;
-        }
-        if (IsExpired())
-        {
-            Console.WriteLine("This commission has expired.");
-            return 0;
-        }
+        if (_isComplete) { Console.WriteLine("Already completed."); return 0; }
+        if (IsExpired()) { Console.WriteLine("This commission has expired."); return 0; }
         _isComplete = true;
         return GetReward();
     }
 
-    public override bool IsComplete() { return _isComplete; }
-
     public override string GetStatus()
     {
         string box = _isComplete ? "[X]" : (IsExpired() ? "[!]" : "[ ]");
-        string due = _isComplete ? "done" : (IsExpired() ? "EXPIRED" : "due " + _deadline.ToString("MMM dd HH:mm"));
-        return box + " [" + _frequency + "] " + GetName() + " (" + GetGoalType() + ") - " + due
-            + " | +" + GetReward() + " XP, +" + _goldReward + " gold | from: " + _villagerSource;
+        string due = _isComplete ? "done" : (IsExpired() ? "EXPIRED" : $"due {_deadline:MMM dd HH:mm}");
+        return $"{box} [{_frequency}] {GetName()} ({GetGoalType()}) - {due} | +{GetReward()} XP, +{_goldReward} gold | from: {_villagerSource}";
     }
 
-    public override string Encode()
-    {
-        return "Commission|" + GetName() + "|" + GetDescription() + "|" + GetReward() + "|" + GetGoalType()
-            + "|" + _goldReward + "|" + _frequency + "|" + _deadline.Ticks + "|" + _isComplete + "|" + _villagerSource;
-    }
+    public override string Encode() =>
+        $"Commission|{GetName()}|{GetDescription()}|{GetReward()}|{GetGoalType()}|{_goldReward}|{_frequency}|{_deadline.Ticks}|{_isComplete}|{_villagerSource}";
 }

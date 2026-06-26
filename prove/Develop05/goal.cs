@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 enum GoalType { Physical, Social, Educational, Spiritual, General }
 
@@ -18,21 +17,13 @@ class Goal
         _type = type;
     }
 
-    public string GetName() { return _name; }
-    public string GetDescription() { return _description; }
-    public int GetReward() { return _reward; }
-    public GoalType GetGoalType() { return _type; }
+    public string GetName() => _name;
+    public string GetDescription() => _description;
+    public int GetReward() => _reward;
+    public GoalType GetGoalType() => _type;
 
-    public virtual int RecordEvent() { return _reward; }
-    public virtual bool IsComplete() { return false; }
-
-    public virtual string GetStatus()
-    {
-        return "[ ] " + _name + " (" + _type + ")";
-    }
-
-    public virtual string Encode()
-    {
-        return "Goal|" + _name + "|" + _description + "|" + _reward + "|" + _type;
-    }
+    public virtual int RecordEvent() => _reward;
+    public virtual bool IsComplete() => false;
+    public virtual string GetStatus() => $"[ ] {_name} ({_type})";
+    public virtual string Encode() => $"Goal|{_name}|{_description}|{_reward}|{_type}";
 }
