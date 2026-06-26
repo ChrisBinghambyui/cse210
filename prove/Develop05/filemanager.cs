@@ -11,7 +11,6 @@ class FileManager
             w.WriteLine(gm.GetXp());
             w.WriteLine(gm.GetLevel());
             w.WriteLine(gm.GetTown().Encode());
-            w.WriteLine(gm.GetExpansion().Encode());
             w.WriteLine(gm.GetVillagers().Encode());
             w.WriteLine(gm.GetCombat().Encode());
 
@@ -37,7 +36,6 @@ class FileManager
         int level = int.Parse(lines[i++]);
 
         TownManager town = DecodeTown(lines[i++]);
-        ExpansionManager expansion = DecodeExpansion(lines, ref i);
         VillagerManager villagers = DecodeVillagers(lines, ref i);
         CombatEngine combat = DecodeCombat(lines[i++]);
 
@@ -52,7 +50,7 @@ class FileManager
         for (int g = 0; g < goalCount; g++)
             goals.Add(DecodeGoal(lines[i++]));
 
-        return new GoalManager(goals, xp, level, town, villagers, board, combat, expansion);
+        return new GoalManager(goals, xp, level, town, villagers, board, combat);
     }
 
     private TownManager DecodeTown(string line)
@@ -63,22 +61,6 @@ class FileManager
         for (int i = 1; i < parts.Length; i++)
             tiers.Add(int.Parse(parts[i]));
         return new TownManager(gold, tiers);
-    }
-
-    private ExpansionManager DecodeExpansion(string[] lines, ref int i)
-    {
-        int tier = int.Parse(lines[i++]);
-        int quarterCount = int.Parse(lines[i++]);
-        List<Quarter> quarters = new List<Quarter>();
-        for (int q = 0; q < quarterCount; q++)
-        {
-            string[] parts = lines[i++].Split("|");
-            string name = parts[0];
-            QuarterSpecialty specialty = (QuarterSpecialty)Enum.Parse(typeof(QuarterSpecialty), parts[1]);
-            int bonus = int.Parse(parts[2]);
-            quarters.Add(new Quarter(name, specialty, bonus));
-        }
-        return new ExpansionManager(tier, quarters);
     }
 
     private VillagerManager DecodeVillagers(string[] lines, ref int i)
@@ -121,11 +103,10 @@ class FileManager
         GoalType reqType = (GoalType)Enum.Parse(typeof(GoalType), ep[3]);
         int goalsReq = int.Parse(ep[4]);
         int goalsDone = int.Parse(ep[5]);
-        int resistance = int.Parse(ep[6]);
-        int goldReward = int.Parse(ep[7]);
-        int xpReward = int.Parse(ep[8]);
+        int goldReward = int.Parse(ep[6]);
+        int xpReward = int.Parse(ep[7]);
 
-        Enemy enemy = new Enemy(name, maxHp, currentHp, reqType, goalsReq, goalsDone, resistance, goldReward, xpReward);
+        Enemy enemy = new Enemy(name, maxHp, currentHp, reqType, goalsReq, goalsDone, goldReward, xpReward);
         DateTime spawn = new DateTime(long.Parse(segments[1]));
         DateTime tick = new DateTime(long.Parse(segments[2]));
         bool def = bool.Parse(segments[3]);

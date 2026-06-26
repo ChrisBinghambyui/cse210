@@ -37,12 +37,12 @@ class CombatEngine
                 SpawnEnemy(playerLevel);
     }
 
-    public void ProcessElapsedTime(int villagePower, int libraryBypass)
+    public void ProcessElapsedTime(int villagePower)
     {
         if (_currentEnemy == null || _enemyDefeated) return;
         int ticks = (int)(DateTime.Now - _lastTickTime).TotalHours;
         for (int i = 0; i < ticks; i++)
-            _currentEnemy.ApplyHourlyDamage(villagePower, libraryBypass);
+            _currentEnemy.ApplyHourlyDamage(villagePower);
         if (ticks > 0) _lastTickTime = _lastTickTime.AddHours(ticks);
         if (_currentEnemy.IsDefeated()) _enemyDefeated = true;
     }

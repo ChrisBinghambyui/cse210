@@ -5,12 +5,21 @@ class EnemyGenerator
 {
     private static string[] _descriptors =
     {
-        "Towering", "Puny", "Massive", "Withered", "Hulking", "Gaunt", "Bloated","Grey", "Shimmering", "Obsidian", "Crimson", "Pale", "Ashen", "Gilded", "Verdant", "Ivory", "Murky", "Violet", "Ember-touched", "Menacing", "Feral", "Emaciated", "Frenzied", "Sullen", "Ravenous", "Cunning", "Wretched", "Hollow-eyed", "Maddened", "Vengeful", "Lurking"
+        "Towering", "Puny", "Massive", "Withered", "Hulking", "Gaunt", "Bloated",
+        "Grey", "Shimmering", "Obsidian", "Crimson", "Pale", "Ashen", "Gilded",
+        "Verdant", "Ivory", "Murky", "Violet", "Ember-touched",
+        "Menacing", "Feral", "Emaciated", "Frenzied", "Sullen", "Ravenous",
+        "Cunning", "Wretched", "Hollow-eyed", "Maddened", "Vengeful", "Lurking"
     };
 
     private static string[] _creatureTypes =
     {
-        "Bandit", "Rogue", "Minotaur", "Rat", "Wraith", "Goblin", "Troll", "Skeleton", "Orc", "Harpy", "Slime", "Wyvern", "Cultist", "Specter", "Giant Spider", "Golem", "Kobold", "Werewolf", "Basilisk", "Ghoul", "Witch", "Hound", "Serpent", "Revenant", "Rat", "Gargoyle", "Drake", "Cave Fisher"
+        "Bandit", "Rogue", "Minotaur", "Rat", "Wraith", "Goblin", "Troll",
+        "Skeleton", "Orc", "Harpy", "Slime", "Wyvern", "Cultist", "Specter",
+        "Giant Spider", "Golem", "Kobold", "Werewolf", "Basilisk", "Ghoul",
+        "Undead Knight", "Bog Witch", "Frostbite Hound", "Iron Serpent",
+        "Sand Revenant", "Plague Rat", "Stone Gargoyle", "Swamp Lurker",
+        "Cursed Merchant", "Fallen Paladin", "Ash Drake", "Cave Fisher"
     };
 
     public static Enemy Generate(int playerLevel)
@@ -29,7 +38,6 @@ class EnemyGenerator
             health,
             requiredType,
             goalsRequired:  rng.Next(1, 4),
-            damageResistance: playerLevel * 2,
             goldReward: 30 + (playerLevel * 10) + rng.Next(0, 20),
             xpReward:   50 + (playerLevel * 15) + rng.Next(0, 25)
         );

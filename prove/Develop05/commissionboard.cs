@@ -8,37 +8,38 @@ class CommissionBoard
     private DateTime _lastDailyRefresh;
     private DateTime _lastWeeklyRefresh;
 
-    private const int DailySetBonus = 75;
-    private const int WeeklySetBonus = 200;
+    private const int DailySetBonus = 20;
+    private const int WeeklySetBonus = 60;
 
+    // format: name|description|type|goldReward
     private static string[] _dailyPool =
     {
-        "Go on a 15-minute walk|Walk outside for at least 15 minutes|Physical|30|15",
-        "Drink 8 glasses of water|Stay hydrated throughout the day|Physical|20|10",
-        "Read for 30 minutes|Read a book or scripture for at least 30 minutes|Educational|30|15",
-        "Journal for 10 minutes|Write in your journal for at least 10 minutes|Spiritual|25|12",
-        "Meditate for 5 minutes|Take 5 minutes to be still and reflect|Spiritual|20|10",
-        "Call a friend or family member|Reach out and connect with someone you care about|Social|25|12",
-        "Do 20 minutes of stretching|Stretch or do light yoga|Physical|20|10",
-        "Cook a meal from scratch|Prepare a full meal without shortcuts|Physical|30|15",
-        "Write down 3 things you are grateful for|Practice gratitude in writing|Spiritual|20|10",
-        "Go to bed before 11pm|Prioritize a good night of rest|Physical|20|10",
-        "Spend 20 minutes tidying your space|Clean and organize your living area|Social|20|10",
-        "Do something kind for someone|An act of service, big or small|Social|30|15"
+        "Go on a 15-minute walk|Walk outside for at least 15 minutes|Physical|8",
+        "Drink 8 glasses of water|Stay hydrated throughout the day|Physical|5",
+        "Read for 30 minutes|Read a book or scripture for at least 30 minutes|Educational|8",
+        "Journal for 10 minutes|Write in your journal for at least 10 minutes|Spiritual|6",
+        "Meditate for 5 minutes|Take 5 minutes to be still and reflect|Spiritual|5",
+        "Call a friend or family member|Reach out and connect with someone you care about|Social|6",
+        "Do 20 minutes of stretching|Stretch or do light yoga|Physical|5",
+        "Cook a meal from scratch|Prepare a full meal without shortcuts|Physical|8",
+        "Write down 3 things you are grateful for|Practice gratitude in writing|Spiritual|5",
+        "Go to bed before 11pm|Prioritize a good night of rest|Physical|5",
+        "Spend 20 minutes tidying your space|Clean and organize your living area|Social|5",
+        "Do something kind for someone|An act of service, big or small|Social|8"
     };
 
     private static string[] _weeklyPool =
     {
-        "Work out for a total of 3 hours|Accumulate 3 hours of exercise this week|Physical|120|60",
-        "Try 3 new recipes|Cook three meals you have never made before|Physical|100|50",
-        "Read an entire book|Finish a complete book this week|Educational|150|75",
-        "Attend a social event|Go to a gathering, activity, or meetup|Social|100|50",
-        "Study for 5 hours total|Put in at least 5 hours of focused study|Educational|150|75",
-        "Complete 5 acts of service|Do something for others on 5 separate occasions|Social|120|60",
-        "Attend all your Sunday meetings|Be present for all church or religious meetings|Spiritual|150|75",
-        "Study scripture every day this week|Read scripture on all 7 days|Spiritual|150|75",
-        "Spend less than 2 hours on social media total|Limit your screen time this week|Educational|100|50",
-        "Write 3 journal entries|Journal at least 3 times this week|Spiritual|100|50"
+        "Work out for a total of 3 hours|Accumulate 3 hours of exercise this week|Physical|35",
+        "Try 3 new recipes|Cook three meals you have never made before|Physical|30",
+        "Read an entire book|Finish a complete book this week|Educational|40",
+        "Attend a social event|Go to a gathering, activity, or meetup|Social|28",
+        "Study for 5 hours total|Put in at least 5 hours of focused study|Educational|35",
+        "Complete 5 acts of service|Do something for others on 5 separate occasions|Social|35",
+        "Attend all your Sunday meetings|Be present for all church or religious meetings|Spiritual|40",
+        "Study scripture every day this week|Read scripture on all 7 days|Spiritual|40",
+        "Spend less than 2 hours on social media total|Limit your screen time this week|Educational|28",
+        "Write 3 journal entries|Journal at least 3 times this week|Spiritual|30"
     };
 
     public CommissionBoard()
@@ -89,7 +90,8 @@ class CommissionBoard
             string[] parts = remaining[idx].Split("|");
             string villager = villagerNames.Count > 0 ? villagerNames[rng.Next(villagerNames.Count)] : "Notice Board";
             GoalType type = (GoalType)Enum.Parse(typeof(GoalType), parts[2]);
-            result.Add(new Commission(parts[0], parts[1], int.Parse(parts[3]), int.Parse(parts[4]), type, frequency, deadline, villager));
+            int goldReward = int.Parse(parts[3]);
+            result.Add(new Commission(parts[0], parts[1], 0, goldReward, type, frequency, deadline, villager));
             remaining.RemoveAt(idx);
         }
         return result;
@@ -131,7 +133,7 @@ class CommissionBoard
 
     private void DisplayPool(string label, List<Commission> pool, int setBonus, int startIndex)
     {
-        Console.WriteLine($"\n-- {label} (full set bonus: +{setBonus} XP, +{setBonus / 2} gold) --");
+        Console.WriteLine($"\n-- {label} (full set bonus: +{setBonus} gold) --");
         if (pool.Count == 0) { Console.WriteLine("  None posted yet."); return; }
         for (int i = 0; i < pool.Count; i++)
             Console.WriteLine($"  {startIndex + i}. {pool[i].GetStatus()}");

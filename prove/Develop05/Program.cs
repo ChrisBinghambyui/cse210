@@ -48,12 +48,10 @@ class Program
             Console.WriteLine("3.  Create a personal goal");
             Console.WriteLine("4.  Missives and Errands");
             Console.WriteLine("5.  Village buildings");
-            Console.WriteLine("6.  Village districts");
-            Console.WriteLine("7.  Villagers");
-            Console.WriteLine("8.  Recruit a villager");
-            Console.WriteLine("9.  Expand village");
-            Console.WriteLine("10. Save");
-            Console.WriteLine("11. Quit");
+            Console.WriteLine("6.  Villagers");
+            Console.WriteLine("7.  Recruit a villager");
+            Console.WriteLine("8.  Save");
+            Console.WriteLine("9.  Quit");
             Console.Write("Choose: ");
 
             int choice;
@@ -64,18 +62,16 @@ class Program
             else if (choice == 3) CreateGoal(gm);
             else if (choice == 4) gm.GetBoard().Display();
             else if (choice == 5) gm.GetTown().UpgradeMenu();
-            else if (choice == 6) gm.GetExpansion().Display();
-            else if (choice == 7) gm.ViewVillagers();
-            else if (choice == 8) gm.RecruitVillager();
-            else if (choice == 9) gm.ExpandVillage();
-            else if (choice == 10)
+            else if (choice == 6) gm.ViewVillagers();
+            else if (choice == 7) gm.RecruitVillager();
+            else if (choice == 8)
             {
                 Console.Write("Filename: ");
                 string filename = Console.ReadLine();
                 fm.SaveGoals(gm, filename);
                 Console.WriteLine("Saved.");
             }
-            else if (choice == 11)
+            else if (choice == 9)
             {
                 running = false;
                 Console.WriteLine("Farewell, adventurer.");
