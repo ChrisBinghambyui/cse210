@@ -1,3 +1,6 @@
+// Since gameifying anything scratches my game dev brain, i kinda want nuts here. Once i got the minimum reqs in by having it interpret the three different goal types, I wanted to add a system of generating generic ones for the user alogside the ones they set for themselves. To incentivize them both I used two different 'currencies', gold and xp, which both provide upgrades along different paths. The user could go nuts on personal goals, but without completing the generated goals for the villagers they'll be left with no gold. The user needs to do both to steadily progress. And for something to use these in-game upgrades for, each day there will be an enemy to defeat. They can start dealing damage once they complete the mandated requirement (like they can't deal damage until they've turned in 3 spiritual goals). Then, each hour the village will deal damage according to bought with gold. If they defeat it, they get a nice big prize. Originally I wanted to add like a district building system, and achievements and a more complex enemy fighting system, but then I realized I'm getting lost in the sauce so here we are.
+
+
 using System;
 using System.Collections.Generic;
 
