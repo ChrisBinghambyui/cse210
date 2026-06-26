@@ -16,15 +16,12 @@ class Villager
 
     private static string[] _firstNames =
     {
-        "Aldric", "Maren", "Torben", "Selja", "Finn", "Bryn", "Oswin", "Lirien",
-        "Cael", "Mira", "Hadwin", "Thyra", "Rowan", "Edda", "Gareth", "Seren",
-        "Wulf", "Anya", "Bram", "Isolde", "Dag", "Nora", "Leif", "Astrid"
+        "Aldric", "Maren", "Torben", "Selja", "Finn", "Bryn", "Oswin", "Lirien", "Cael", "Mira", "Hadwin", "Thyra", "Rowan", "Edda", "Gareth", "Seren", "Wulf", "Anya", "Bram", "Isolde", "Dag", "Nora", "Leif", "Astrid"
     };
 
     private static string[] _lastNames =
     {
-        "Ashveil", "Ironmoor", "Coldwater", "Thornwick", "Embervane", "Stonefall",
-        "Duskholm", "Greywood", "Saltfen", "Coppergate", "Bramblefield", "Nighthollow"
+        "Ashveil", "Ironmoor", "Coldwater", "Thornwick", "Embervane", "Stonefall", "Duskholm", "Greywood", "Saltfen", "Coppergate", "Bramblefield", "Nighthollow"
     };
 
     private static Dictionary<VillagerSpecialty, string[]> _titles = new Dictionary<VillagerSpecialty, string[]>

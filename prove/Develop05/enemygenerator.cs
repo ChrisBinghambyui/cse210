@@ -1,33 +1,22 @@
 using System;
-using System.Collections.Generic;
 
 class EnemyGenerator
 {
     private static string[] _descriptors =
     {
-        "Towering", "Puny", "Massive", "Withered", "Hulking", "Gaunt", "Bloated",
-        "Grey", "Shimmering", "Obsidian", "Crimson", "Pale", "Ashen", "Gilded",
-        "Verdant", "Ivory", "Murky", "Violet", "Ember-touched",
-        "Menacing", "Feral", "Emaciated", "Frenzied", "Sullen", "Ravenous",
-        "Cunning", "Wretched", "Hollow-eyed", "Maddened", "Vengeful", "Lurking"
+        "Towering", "Puny", "Massive", "Withered", "Hulking", "Gaunt", "Bloated", "Grey", "Shimmering", "Obsidian", "Crimson", "Pale", "Ashen", "Gilded", "Verdant", "Ivory", "Murky", "Violet", "Ember-touched", "Menacing", "Feral", "Emaciated", "Frenzied", "Sullen", "Ravenous", "Cunning", "Wretched", "Hollow-eyed", "Maddened", "Vengeful", "Lurking", "Undead", "Cursed", "Ancient", "Rotting", "Spectral", "Iron", "Plague", "Stone", "Frostbite", "Swamp", "Sand", "Ash", "Bog"
     };
 
     private static string[] _creatureTypes =
     {
-        "Bandit", "Rogue", "Minotaur", "Rat", "Wraith", "Goblin", "Troll",
-        "Skeleton", "Orc", "Harpy", "Slime", "Wyvern", "Cultist", "Specter",
-        "Giant Spider", "Golem", "Kobold", "Werewolf", "Basilisk", "Ghoul",
-        "Undead Knight", "Bog Witch", "Frostbite Hound", "Iron Serpent",
-        "Sand Revenant", "Plague Rat", "Stone Gargoyle", "Swamp Lurker",
-        "Cursed Merchant", "Fallen Paladin", "Ash Drake", "Cave Fisher"
+        "Bandit", "Rogue", "Minotaur", "Rat Swarm", "Wraith", "Goblin", "Troll", "Skeleton", "Orc", "Harpy", "Slime", "Wyvern", "Cultist", "Specter", "Spider", "Golem", "Kobold", "Werewolf", "Basilisk", "Ghoul", "Witch", "Hound", "Serpent", "Revenant", "Gargoyle", "Drake"
     };
 
     public static Enemy Generate(int playerLevel)
     {
         Random rng = new Random(DateTime.Now.DayOfYear + DateTime.Now.Year);
 
-        string name = $"{_descriptors[rng.Next(_descriptors.Length)]} {_descriptors[rng.Next(_descriptors.Length)]} {_creatureTypes[rng.Next(_creatureTypes.Length)]}";
-
+        string name = $"{_descriptors[rng.Next(_descriptors.Length)]} {_creatureTypes[rng.Next(_creatureTypes.Length)]}";
         int health = 20 + (playerLevel * 10) + rng.Next(-5, 15);
 
         Array types = Enum.GetValues(typeof(GoalType));
@@ -37,9 +26,9 @@ class EnemyGenerator
             name,
             health,
             requiredType,
-            goalsRequired:  rng.Next(1, 4),
+            goalsRequired: rng.Next(1, 4),
             goldReward: 30 + (playerLevel * 10) + rng.Next(0, 20),
-            xpReward:   50 + (playerLevel * 15) + rng.Next(0, 25)
+            xpReward: 50 + (playerLevel * 15) + rng.Next(0, 25)
         );
     }
 }

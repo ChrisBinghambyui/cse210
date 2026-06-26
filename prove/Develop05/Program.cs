@@ -1,11 +1,3 @@
-// Exceeds requirements: full idle RPG gamification layer including a four-building town upgrade
-// system (Town Hall, Blacksmith, Library, Tavern), daily/weekly Missives and Errands from
-// villagers, a real-time daily enemy threat with hourly combat ticks that run while the app is
-// closed, procedurally named village districts with specialties that buff specific goal types,
-// recruitable villagers who level up after completing personal quests, and a village expansion
-// system that increases capacity and combat power. Two goal tracks: personal goals award XP
-// and drive leveling; commissions award gold for town upgrades and recruitment.
-
 using System;
 using System.Collections.Generic;
 
