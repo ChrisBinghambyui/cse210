@@ -6,22 +6,51 @@ namespace ScrollsAndSteel
 {
     public class CharacterFileManager
     {
-        public void SaveCharacter(Character character, string filename)
+        private const string FolderName = "character sheets";
+
+        public bool SaveCharacter(Character character, string desiredName)
         {
+            Directory.CreateDirectory(FolderName);
+
+            string fullPath = Path.Combine(FolderName, desiredName + ".txt");
+
+            if (File.Exists(fullPath))
+            {
+                Console.WriteLine("A character sheet named '" + desiredName + "' already exists. Choose a different name.");
+                return false;
+            }
+
             string line = character.Encode();
-            File.WriteAllText(filename, line);
-            Console.WriteLine("Character saved to " + filename);
+            File.WriteAllText(fullPath, line);
+            Console.WriteLine("Character saved as '" + desiredName + "'.");
+            return true;
         }
 
-        public Character LoadCharacter(string filename)
+        public List<string> ListSavedCharacterNames()
         {
-            if (!File.Exists(filename))
+            Directory.CreateDirectory(FolderName);
+
+            List<string> names = new List<string>();
+            string[] filePaths = Directory.GetFiles(FolderName, "*.txt");
+            for (int i = 0; i < filePaths.Length; i++)
             {
-                Console.WriteLine("File not found: " + filename);
+                string nameOnly = Path.GetFileNameWithoutExtension(filePaths[i]);
+                names.Add(nameOnly);
+            }
+            return names;
+        }
+
+        public Character LoadCharacter(string characterName)
+        {
+            string fullPath = Path.Combine(FolderName, characterName + ".txt");
+
+            if (!File.Exists(fullPath))
+            {
+                Console.WriteLine("File not found: " + fullPath);
                 return null;
             }
 
-            string line = File.ReadAllText(filename);
+            string line = File.ReadAllText(fullPath);
             return DecodeCharacter(line);
         }
 

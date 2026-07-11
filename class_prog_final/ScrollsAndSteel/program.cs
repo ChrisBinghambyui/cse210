@@ -135,72 +135,157 @@ namespace ScrollsAndSteel
             int pointsRemaining = 30;
             Console.WriteLine();
             Console.WriteLine("All attributes start at 40. Distribute 30 extra points.");
-            while (pointsRemaining > 0)
+
+            bool confirmed = false;
+            while (!confirmed)
             {
                 Console.WriteLine();
-                Console.WriteLine("Points remaining: " + pointsRemaining);
-                Console.WriteLine(string.Join(", ", AttributeNames));
-                Console.Write("Attribute to increase: ");
-
-                string input = Console.ReadLine();
-                if (input == null)
-                {
-                    input = "";
-                }
-                string chosen = input.Trim().ToUpper();
-
-                bool isValidAttribute = false;
+                Console.WriteLine("Current Attributes:");
                 foreach (string name in AttributeNames)
                 {
-                    if (name == chosen)
+                    Console.WriteLine("  " + name + " " + attributes[name]);
+                }
+                Console.WriteLine("Points remaining: " + pointsRemaining);
+
+                Console.WriteLine();
+                Console.WriteLine("1. Add points to an attribute");
+                Console.WriteLine("2. Remove points from an attribute");
+                Console.WriteLine("3. Confirm and continue");
+                Console.Write("Choose an option: ");
+                int choice = ReadIntInRange(1, 3);
+
+                if (choice == 1)
+                {
+                    pointsRemaining = AddAttributePoints(attributes, pointsRemaining);
+                }
+                else if (choice == 2)
+                {
+                    pointsRemaining = RemoveAttributePoints(attributes, pointsRemaining);
+                }
+                else if (choice == 3)
+                {
+                    if (pointsRemaining > 0)
                     {
-                        isValidAttribute = true;
+                        Console.WriteLine("You still have " + pointsRemaining + " points to distribute first.");
+                    }
+                    else
+                    {
+                        confirmed = true;
                     }
                 }
-
-                if (!isValidAttribute)
-                {
-                    Console.WriteLine("Not a recognized attribute. Try again.");
-                    continue;
-                }
-
-                Console.Write("How many points to add? ");
-                int amount = ReadIntInRange(1, pointsRemaining);
-
-                int newValue = attributes[chosen] + amount;
-                if (newValue > 65)
-                {
-                    Console.WriteLine("Attributes cannot exceed 65 before racial bonuses. Try a smaller amount.");
-                    continue;
-                }
-
-                attributes[chosen] = newValue;
-                pointsRemaining = pointsRemaining - amount;
             }
 
             return attributes;
         }
 
+        private int AddAttributePoints(Dictionary<string, int> attributes, int pointsRemaining)
+        {
+            if (pointsRemaining <= 0)
+            {
+                Console.WriteLine("You have no points left. Remove some from another attribute first.");
+                return pointsRemaining;
+            }
+
+            Console.Write("Which attribute do you want to add points to? ");
+            string input = Console.ReadLine();
+            if (input == null)
+            {
+                input = "";
+            }
+            string chosen = input.Trim().ToUpper();
+
+            bool isValidAttribute = false;
+            foreach (string name in AttributeNames)
+            {
+                if (name == chosen)
+                {
+                    isValidAttribute = true;
+                }
+            }
+
+            if (!isValidAttribute)
+            {
+                Console.WriteLine("Not a recognized attribute.");
+                return pointsRemaining;
+            }
+
+            Console.Write("How many points to add? ");
+            int amount = ReadIntInRange(1, pointsRemaining);
+
+            int newValue = attributes[chosen] + amount;
+            if (newValue > 65)
+            {
+                Console.WriteLine("Attributes cannot exceed 65 before racial bonuses. Try a smaller amount.");
+                return pointsRemaining;
+            }
+
+            attributes[chosen] = newValue;
+            return pointsRemaining - amount;
+        }
+
+        private int RemoveAttributePoints(Dictionary<string, int> attributes, int pointsRemaining)
+        {
+            Console.Write("Which attribute do you want to remove points from? ");
+            string input = Console.ReadLine();
+            if (input == null)
+            {
+                input = "";
+            }
+            string chosen = input.Trim().ToUpper();
+
+            bool isValidAttribute = false;
+            foreach (string name in AttributeNames)
+            {
+                if (name == chosen)
+                {
+                    isValidAttribute = true;
+                }
+            }
+
+            if (!isValidAttribute)
+            {
+                Console.WriteLine("Not a recognized attribute.");
+                return pointsRemaining;
+            }
+
+            int extraPoints = attributes[chosen] - 40;
+            if (extraPoints <= 0)
+            {
+                Console.WriteLine("That attribute has no extra points to remove.");
+                return pointsRemaining;
+            }
+
+            Console.Write("How many points to remove (up to " + extraPoints + ")? ");
+            int amount = ReadIntInRange(1, extraPoints);
+
+            attributes[chosen] = attributes[chosen] - amount;
+            return pointsRemaining + amount;
+        }
+
         private void AssignSkills(Character character)
         {
+            List<string> majorSkills = new List<string>();
+            List<string> minorSkills = new List<string>();
+
+            bool confirmed = false;
+            while (!confirmed)
+            {
+                majorSkills = ChooseSkillGroup("Major", 5, new List<string>());
+                minorSkills = ChooseSkillGroup("Minor", 5, majorSkills);
+
+                Console.WriteLine();
+                Console.WriteLine("Major Skills (start at 40): " + string.Join(", ", majorSkills));
+                Console.WriteLine("Minor Skills (start at 25): " + string.Join(", ", minorSkills));
+                Console.WriteLine("All other skills start at 5.");
+                Console.Write("Confirm these skills? (yes/no): ");
+                confirmed = ReadYesNo();
+            }
+
             List<string> allSkillNames = new List<string>();
             foreach (string name in SkillDefinitions.All.Keys)
             {
                 allSkillNames.Add(name);
             }
-
-            List<string> majorSkills = ChooseSkillSet(allSkillNames, "Major", 5);
-
-            List<string> remainingAfterMajor = new List<string>();
-            foreach (string name in allSkillNames)
-            {
-                if (!majorSkills.Contains(name))
-                {
-                    remainingAfterMajor.Add(name);
-                }
-            }
-
-            List<string> minorSkills = ChooseSkillSet(remainingAfterMajor, "Minor", 5);
 
             foreach (string skillName in allSkillNames)
             {
@@ -229,12 +314,72 @@ namespace ScrollsAndSteel
             }
         }
 
-        private List<string> ChooseSkillSet(List<string> availableSkills, string tierName, int countToChoose)
+        private void PrintSkillGroups()
+        {
+            Console.WriteLine("1: Warrior Skills");
+            for (int i = 0; i < SkillDefinitions.WarriorSkills.Length; i++)
+            {
+                Console.WriteLine("  1" + (i + 1) + " - " + SkillDefinitions.WarriorSkills[i]);
+            }
+            Console.WriteLine("2: Mage Skills");
+            for (int i = 0; i < SkillDefinitions.MageSkills.Length; i++)
+            {
+                Console.WriteLine("  2" + (i + 1) + " - " + SkillDefinitions.MageSkills[i]);
+            }
+            Console.WriteLine("3: Thief Skills");
+            for (int i = 0; i < SkillDefinitions.ThiefSkills.Length; i++)
+            {
+                Console.WriteLine("  3" + (i + 1) + " - " + SkillDefinitions.ThiefSkills[i]);
+            }
+        }
+
+        private string GetSkillNameFromCode(string code)
+        {
+            if (code.Length != 2)
+            {
+                return null;
+            }
+
+            char groupChar = code[0];
+            char positionChar = code[1];
+
+            string[] group;
+            if (groupChar == '1')
+            {
+                group = SkillDefinitions.WarriorSkills;
+            }
+            else if (groupChar == '2')
+            {
+                group = SkillDefinitions.MageSkills;
+            }
+            else if (groupChar == '3')
+            {
+                group = SkillDefinitions.ThiefSkills;
+            }
+            else
+            {
+                return null;
+            }
+
+            int position;
+            bool isNumber = int.TryParse(positionChar.ToString(), out position);
+            if (!isNumber || position < 1 || position > group.Length)
+            {
+                return null;
+            }
+
+            return group[position - 1];
+        }
+
+        private List<string> ChooseSkillGroup(string tierName, int countToChoose, List<string> alreadyChosen)
         {
             List<string> chosen = new List<string>();
+
             Console.WriteLine();
-            Console.WriteLine("Choose " + countToChoose + " " + tierName + " skills from the list below:");
-            Console.WriteLine(string.Join(", ", availableSkills));
+            Console.WriteLine("Choose " + countToChoose + " " + tierName + " skills.");
+            Console.WriteLine("Enter a 2-digit code: first digit is the group, second digit is the skill number.");
+            Console.WriteLine("Example: 13 = group 1 (Warrior), skill 3 in that list.");
+            PrintSkillGroups();
 
             while (chosen.Count < countToChoose)
             {
@@ -246,25 +391,49 @@ namespace ScrollsAndSteel
                 }
                 input = input.Trim();
 
-                string match = null;
-                foreach (string skillName in availableSkills)
-                {
-                    if (string.Equals(skillName, input, StringComparison.OrdinalIgnoreCase))
-                    {
-                        match = skillName;
-                    }
-                }
+                string skillName = GetSkillNameFromCode(input);
 
-                if (match == null || chosen.Contains(match))
+                if (skillName == null)
                 {
-                    Console.WriteLine("Not a valid, unused skill from the list. Try again.");
+                    Console.WriteLine("Not a valid code. Try again.");
                     continue;
                 }
 
-                chosen.Add(match);
+                if (alreadyChosen.Contains(skillName) || chosen.Contains(skillName))
+                {
+                    Console.WriteLine("That skill has already been chosen. Try again.");
+                    continue;
+                }
+
+                chosen.Add(skillName);
+                Console.WriteLine("Added " + skillName + ".");
             }
 
             return chosen;
+        }
+
+        private bool ReadYesNo()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine();
+                if (input == null)
+                {
+                    input = "";
+                }
+                input = input.Trim().ToLower();
+
+                if (input == "yes" || input == "y")
+                {
+                    return true;
+                }
+                if (input == "no" || input == "n")
+                {
+                    return false;
+                }
+
+                Console.Write("Please enter yes or no: ");
+            }
         }
 
         public void DisplayCharacterSheet(Character character)
@@ -338,34 +507,46 @@ namespace ScrollsAndSteel
                 return;
             }
 
-            Console.Write("Enter a filename to save to (example: boblin_the_goblin.txt): ");
-            string filename = Console.ReadLine();
-            if (filename == null || filename.Trim() == "")
+            Console.Write("Enter a name for this character sheet (no extension needed): ");
+            string name = Console.ReadLine();
+            if (name == null || name.Trim() == "")
             {
-                filename = "character.txt";
+                name = "character";
             }
             else
             {
-                filename = filename.Trim();
+                name = name.Trim();
             }
 
-            _fileManager.SaveCharacter(character, filename);
+            _fileManager.SaveCharacter(character, name);
         }
 
         public Character LoadCharacterFromFile()
         {
-            Console.Write("Enter a filename to load from (example: aldric.txt): ");
-            string filename = Console.ReadLine();
-            if (filename == null)
-            {
-                filename = "";
-            }
-            filename = filename.Trim();
+            List<string> savedNames = _fileManager.ListSavedCharacterNames();
 
-            Character loadedCharacter = _fileManager.LoadCharacter(filename);
+            if (savedNames.Count == 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine("No saved character sheets found.");
+                return null;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Saved character sheets:");
+            for (int i = 0; i < savedNames.Count; i++)
+            {
+                Console.WriteLine((i + 1) + ". " + savedNames[i]);
+            }
+
+            Console.Write("Enter the number of the character sheet to load: ");
+            int choice = ReadIntInRange(1, savedNames.Count);
+            string chosenName = savedNames[choice - 1];
+
+            Character loadedCharacter = _fileManager.LoadCharacter(chosenName);
             if (loadedCharacter != null)
             {
-                Console.WriteLine("Loaded " + loadedCharacter.GetName() + " from " + filename);
+                Console.WriteLine("Loaded " + loadedCharacter.GetName() + ".");
             }
             return loadedCharacter;
         }
