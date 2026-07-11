@@ -338,7 +338,7 @@ namespace ScrollsAndSteel
                 return;
             }
 
-            Console.Write("Enter a filename to save to (example: aldric.txt): ");
+            Console.Write("Enter a filename to save to (example: boblin_the_goblin.txt): ");
             string filename = Console.ReadLine();
             if (filename == null || filename.Trim() == "")
             {
