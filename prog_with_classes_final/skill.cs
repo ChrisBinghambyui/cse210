@@ -45,5 +45,18 @@ namespace ScrollsAndSteel
             int cap = GetCap();
             _value = Math.Min(_value + amount, cap);
         }
+
+        public void SetValue(int value)
+        {
+            int cap = GetCap();
+            if (value > cap)
+            {
+                _value = cap;
+            }
+            else
+            {
+                _value = value;
+            }
+        }
     }
 }

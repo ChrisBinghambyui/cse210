@@ -102,6 +102,7 @@ namespace ScrollsAndSteel
             Character character = new Character(name, race, startingAttributes);
 
             AssignSkills(character);
+            race.ApplySkillBonuses(character);
             character.CalculateDerivedStats();
 
             Console.WriteLine();
@@ -117,11 +118,31 @@ namespace ScrollsAndSteel
             {
                 Console.WriteLine((i + 1) + ". " + RaceNames[i]);
             }
-            Console.Write("Choice: ");
-            int choice = ReadIntInRange(1, RaceNames.Length);
-            string chosenName = RaceNames[choice - 1];
 
-            return RaceFactory.CreateByName(chosenName);
+            Race chosenRace = null;
+            while (chosenRace == null)
+            {
+                Console.Write("Choice: ");
+                int choice = ReadIntInRange(1, RaceNames.Length);
+                string chosenName = RaceNames[choice - 1];
+                Race candidate = RaceFactory.CreateByName(chosenName);
+
+                Console.WriteLine();
+                Console.WriteLine(candidate.GetName());
+                Console.WriteLine(candidate.GetBonusSummary());
+                Console.WriteLine();
+                Console.WriteLine(candidate.GetDescription());
+                Console.WriteLine();
+                Console.Write("Confirm this race? (yes/no): ");
+                bool confirmed = ReadYesNo();
+
+                if (confirmed)
+                {
+                    chosenRace = candidate;
+                }
+            }
+
+            return chosenRace;
         }
 
         private Dictionary<string, int> AssignAttributes()
@@ -319,17 +340,23 @@ namespace ScrollsAndSteel
             Console.WriteLine("1: Warrior Skills");
             for (int i = 0; i < SkillDefinitions.WarriorSkills.Length; i++)
             {
-                Console.WriteLine("  1" + (i + 1) + " - " + SkillDefinitions.WarriorSkills[i]);
+                string skillName = SkillDefinitions.WarriorSkills[i];
+                string description = SkillDefinitions.Descriptions[skillName];
+                Console.WriteLine("  1" + (i + 1) + " - " + skillName + " (" + description + ")");
             }
             Console.WriteLine("2: Mage Skills");
             for (int i = 0; i < SkillDefinitions.MageSkills.Length; i++)
             {
-                Console.WriteLine("  2" + (i + 1) + " - " + SkillDefinitions.MageSkills[i]);
+                string skillName = SkillDefinitions.MageSkills[i];
+                string description = SkillDefinitions.Descriptions[skillName];
+                Console.WriteLine("  2" + (i + 1) + " - " + skillName + " (" + description + ")");
             }
             Console.WriteLine("3: Thief Skills");
             for (int i = 0; i < SkillDefinitions.ThiefSkills.Length; i++)
             {
-                Console.WriteLine("  3" + (i + 1) + " - " + SkillDefinitions.ThiefSkills[i]);
+                string skillName = SkillDefinitions.ThiefSkills[i];
+                string description = SkillDefinitions.Descriptions[skillName];
+                Console.WriteLine("  3" + (i + 1) + " - " + skillName + " (" + description + ")");
             }
         }
 

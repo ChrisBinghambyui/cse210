@@ -35,6 +35,37 @@ namespace ScrollsAndSteel
             { "Fistfight",     new string[] { "STR", "AGI" } },
         };
 
+        public static readonly Dictionary<string, string> Descriptions = new Dictionary<string, string>
+        {
+            { "Long Blade",    "Swords, sabers, and longswords." },
+            { "Short Blade",   "Daggers, dirks, and short swords." },
+            { "Blunt Weapon",  "Maces, clubs, warhammers, and staves used as bludgeons." },
+            { "Axe",           "Hand axes, war axes, and greataxes." },
+            { "Spear",         "Polearms and thrusting weapons. Extended reach." },
+            { "Marksman",      "Bows, crossbows, and thrown weapons." },
+            { "Block",         "Active defense with a shield or two-handed weapon parry." },
+            { "Unarmored",     "Defense and fluid movement without armor." },
+            { "Light Armor",   "Leather, hide, and padded armor." },
+            { "Medium Armor",  "Chainmail, scale, and brigandine." },
+            { "Heavy Armor",   "Plate and full steel." },
+            { "Athletics",     "Running, swimming, climbing, and sustained movement." },
+            { "Acrobatics",    "Tumbling, vaulting, and falling safely." },
+            { "Sneak",         "Moving unseen and unheard." },
+            { "Security",      "Picking locks and disarming traps." },
+            { "Speechcraft",   "Persuasion, deception, and intimidation." },
+            { "Mercantile",    "Buying, selling, and negotiating to your advantage." },
+            { "Alchemy",       "Brewing potions and poisons from raw ingredients." },
+            { "Enchanting",    "Binding magical effects permanently into items." },
+            { "Conjuration",   "Summoning creatures and binding spirits from other planes." },
+            { "Alteration",    "Bending physical laws: weight, water, locks, and more." },
+            { "Elementalism",  "Offensive elemental magic: fire, frost, and shock." },
+            { "Illusion",      "Manipulating perception and the senses." },
+            { "Divination",    "Soul-work, telekinesis, detection, and spell-weaving." },
+            { "Vitalism",      "Healing wounds and curing ailments." },
+            { "Armorer",       "Repairing and maintaining weapons and armor. Also used to craft basic equipment at a forge." },
+            { "Fistfight",     "Attacks made while unarmed or with fist wraps and gauntlets." },
+        };
+
         public static readonly string[] WarriorSkills = new string[]
         {
             "Long Blade", "Blunt Weapon", "Axe", "Spear", "Block",
@@ -51,6 +82,19 @@ namespace ScrollsAndSteel
         {
             "Short Blade", "Marksman", "Unarmored", "Light Armor", "Acrobatics",
             "Sneak", "Security", "Speechcraft", "Mercantile"
+        };
+
+        public static readonly string[] MagicSchools = new string[]
+        {
+            "Alchemy", "Enchanting", "Conjuration", "Alteration",
+            "Elementalism", "Illusion", "Divination", "Vitalism"
+        };
+
+        public static readonly string[] NonCombatSkills = new string[]
+        {
+            "Athletics", "Acrobatics", "Sneak", "Security", "Speechcraft", "Mercantile",
+            "Alchemy", "Enchanting", "Conjuration", "Alteration",
+            "Elementalism", "Illusion", "Divination", "Vitalism", "Armorer"
         };
     }
 }
