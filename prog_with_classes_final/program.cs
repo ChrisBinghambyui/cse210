@@ -13,6 +13,10 @@ namespace ScrollsAndSteel
         private static readonly string[] AttributeNames =
             { "STR", "END", "AGI", "SPD", "INT", "WIL", "PER", "LCK" };
 
+        // Rulebook Chapter 11, Step 2: "No Attribute may be below 10 ... before racial bonuses."
+        private const int AttributeMinimum = 10;
+        private const int AttributeMaximum = 65;
+
         private static readonly string[] RaceNames =
         {
             "Solarirum", "Sylvarirum", "Vethanirum", "Ashirum",
@@ -101,8 +105,7 @@ namespace ScrollsAndSteel
 
             Character character = new Character(name, race, startingAttributes);
 
-            AssignSkills(character);
-            race.ApplySkillBonuses(character);
+            AssignSkills(character, race);
             character.CalculateDerivedStats();
 
             Console.WriteLine();
@@ -234,9 +237,9 @@ namespace ScrollsAndSteel
             int amount = ReadIntInRange(1, pointsRemaining);
 
             int newValue = attributes[chosen] + amount;
-            if (newValue > 65)
+            if (newValue > AttributeMaximum)
             {
-                Console.WriteLine("Attributes cannot exceed 65 before racial bonuses. Try a smaller amount.");
+                Console.WriteLine("Attributes cannot exceed " + AttributeMaximum + " before racial bonuses. Try a smaller amount.");
                 return pointsRemaining;
             }
 
@@ -269,21 +272,21 @@ namespace ScrollsAndSteel
                 return pointsRemaining;
             }
 
-            int extraPoints = attributes[chosen] - 40;
-            if (extraPoints <= 0)
+            int removable = attributes[chosen] - AttributeMinimum;
+            if (removable <= 0)
             {
-                Console.WriteLine("That attribute has no extra points to remove.");
+                Console.WriteLine("That attribute is already at the minimum of " + AttributeMinimum + ".");
                 return pointsRemaining;
             }
 
-            Console.Write("How many points to remove (up to " + extraPoints + ")? ");
-            int amount = ReadIntInRange(1, extraPoints);
+            Console.Write("How many points to remove (up to " + removable + ")? ");
+            int amount = ReadIntInRange(1, removable);
 
             attributes[chosen] = attributes[chosen] - amount;
             return pointsRemaining + amount;
         }
 
-        private void AssignSkills(Character character)
+        private void AssignSkills(Character character, Race race)
         {
             List<string> majorSkills = new List<string>();
             List<string> minorSkills = new List<string>();
@@ -308,6 +311,8 @@ namespace ScrollsAndSteel
                 allSkillNames.Add(name);
             }
 
+            List<string> miscSkills = new List<string>();
+
             foreach (string skillName in allSkillNames)
             {
                 string[] governingNames = SkillDefinitions.All[skillName];
@@ -329,10 +334,152 @@ namespace ScrollsAndSteel
                 else
                 {
                     startingValue = 5;
+                    miscSkills.Add(skillName);
                 }
 
                 character.AddSkill(new Skill(skillName, startingValue, governingAttributes));
             }
+
+            // Rulebook Step 3: "Apply racial skill bonuses. Then, distribute 5 points among
+            // the Major Skills, 5 among the Minor Skills, and 5 among the Miscellaneous skills."
+            race.ApplySkillBonuses(character);
+
+            DistributeSkillPoints(character, "Major", majorSkills, 5);
+            DistributeSkillPoints(character, "Minor", minorSkills, 5);
+            DistributeSkillPoints(character, "Miscellaneous", miscSkills, 5);
+        }
+
+        private void DistributeSkillPoints(Character character, string tierName, List<string> skillNames, int totalPoints)
+        {
+            int pointsRemaining = totalPoints;
+            Dictionary<string, int> spentThisTier = new Dictionary<string, int>();
+            foreach (string name in skillNames)
+            {
+                spentThisTier[name] = 0;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Distribute " + totalPoints + " points among your " + tierName + " skills.");
+            Console.WriteLine("(A skill cannot rise above its governing Attribute's cap.)");
+
+            bool confirmed = false;
+            while (!confirmed)
+            {
+                Console.WriteLine();
+                Console.WriteLine(tierName + " skills:");
+                foreach (string name in skillNames)
+                {
+                    Skill skillInGroup = character.GetSkill(name);
+                    Console.WriteLine("  " + name + ": " + skillInGroup.GetValue() + " (cap " + skillInGroup.GetCap() + ")");
+                }
+                Console.WriteLine("Points remaining: " + pointsRemaining);
+
+                Console.WriteLine();
+                Console.WriteLine("1. Add points to a skill");
+                Console.WriteLine("2. Remove points from a skill");
+                Console.WriteLine("3. Confirm and continue");
+                Console.Write("Choose an option: ");
+                int choice = ReadIntInRange(1, 3);
+
+                if (choice == 1)
+                {
+                    pointsRemaining = AddSkillPoints(character, tierName, skillNames, spentThisTier, pointsRemaining);
+                }
+                else if (choice == 2)
+                {
+                    pointsRemaining = RemoveSkillPoints(character, skillNames, spentThisTier, pointsRemaining);
+                }
+                else if (choice == 3)
+                {
+                    confirmed = true;
+                }
+            }
+        }
+
+        private int AddSkillPoints(Character character, string tierName, List<string> skillNames,
+            Dictionary<string, int> spentThisTier, int pointsRemaining)
+        {
+            if (pointsRemaining <= 0)
+            {
+                Console.WriteLine("You have no " + tierName + " points left to spend.");
+                return pointsRemaining;
+            }
+
+            Console.Write("Which skill do you want to add points to? ");
+            string input = Console.ReadLine();
+            if (input == null)
+            {
+                input = "";
+            }
+            input = input.Trim();
+
+            Skill chosen = FindSkillInGroup(character, skillNames, input);
+            if (chosen == null)
+            {
+                Console.WriteLine("That's not one of your " + tierName + " skills.");
+                return pointsRemaining;
+            }
+
+            int roomUnderCap = chosen.GetCap() - chosen.GetValue();
+            if (roomUnderCap <= 0)
+            {
+                Console.WriteLine(chosen.GetName() + " is already at its Attribute cap (" +
+                    chosen.GetCap() + ") and cannot rise further until that Attribute improves.");
+                return pointsRemaining;
+            }
+
+            int maxAmount = Math.Min(pointsRemaining, roomUnderCap);
+            Console.Write("How many points to add (up to " + maxAmount + ")? ");
+            int amount = ReadIntInRange(1, maxAmount);
+
+            chosen.IncreaseSkill(amount);
+            spentThisTier[chosen.GetName()] = spentThisTier[chosen.GetName()] + amount;
+            return pointsRemaining - amount;
+        }
+
+        private int RemoveSkillPoints(Character character, List<string> skillNames,
+            Dictionary<string, int> spentThisTier, int pointsRemaining)
+        {
+            Console.Write("Which skill do you want to remove points from? ");
+            string input = Console.ReadLine();
+            if (input == null)
+            {
+                input = "";
+            }
+            input = input.Trim();
+
+            Skill chosen = FindSkillInGroup(character, skillNames, input);
+            if (chosen == null)
+            {
+                Console.WriteLine("That's not one of your skills in this tier.");
+                return pointsRemaining;
+            }
+
+            int alreadySpent = spentThisTier[chosen.GetName()];
+            if (alreadySpent <= 0)
+            {
+                Console.WriteLine("You haven't put any of these points into " + chosen.GetName() + " yet.");
+                return pointsRemaining;
+            }
+
+            Console.Write("How many points to remove (up to " + alreadySpent + ")? ");
+            int amount = ReadIntInRange(1, alreadySpent);
+
+            chosen.SetValue(chosen.GetValue() - amount);
+            spentThisTier[chosen.GetName()] = alreadySpent - amount;
+            return pointsRemaining + amount;
+        }
+
+        private Skill FindSkillInGroup(Character character, List<string> skillNames, string input)
+        {
+            foreach (string name in skillNames)
+            {
+                if (string.Equals(name, input, StringComparison.OrdinalIgnoreCase))
+                {
+                    return character.GetSkill(name);
+                }
+            }
+            return null;
         }
 
         private void PrintSkillGroups()
