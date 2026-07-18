@@ -10,3 +10,7 @@ def test_quicksort():
     assert run_sort([9,1]) == [1,9]
     assert run_sort([-3,-1,-7,-2,-5]) == [-7,-5,-3,-2,-1]
     assert run_sort([3,-2,7,-5,0]) == [-5,-2,0,3,7]
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
