@@ -4,7 +4,7 @@ namespace ScrollsAndSteel
     {
         public Naukin() : base(
             "Naukin",
-            "The Naukin are ratfolk: lean, quick, whisker-faced, and collectively the product of centuries of exploitation at the hands of mage-scholars who used them as subjects, test cases, servants, and occasionally ingredients. Their escape from the great wizard academies is a matter of historical record; how they organized it is not, because the Naukin have never discussed it with outsiders.")
+            "The Naukin are ratfolk: lean, quick, whisker-faced, and collectively the product of centuries of exploitation at the hands of mage-scholars who used them as subjects, test cases, servants, and occasionally ingredients. Their escape from the great wizard academies is a matter of historical record. How they organized it is unknown, because it is the most well-kept of the Naukin's many secrets.")
         {
         }
 
