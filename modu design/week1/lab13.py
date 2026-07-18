@@ -1,3 +1,16 @@
+# 1. Name:
+#      Chris Bingham
+# 2. Assignment Name:
+#      Lab 13 : Segregation Sort Program
+# 3. Assignment Description:
+#      sort an array of numbers using a segregation sort
+# 4. What was the hardest part? Be as specific as possible.
+#      This week wasn't hard at all actually, the pseudocode from last week kinda carried
+# 5. How long did it take for you to complete the assignment?
+#      like an hour, tops
+
+
+
 def quicksort(A, left, right):
     if left >= right:
         return
